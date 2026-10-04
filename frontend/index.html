@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StockSync — Home (Sri Ganesh General Stores)</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+  <nav class="glass-navbar d-flex justify-content-between align-items-center">
+    <a href="index.html" class="brand-logo">
+      <i class="fa-solid fa-store fs-3 text-info"></i>
+      <span>StockSync <small style="font-size:0.75rem;color:var(--cyan)">v2.5 Dark</small></span>
+    </a>
+
+    <div class="d-none d-md-flex align-items-center gap-1">
+      <a href="#about" class="nav-link-custom">About</a>
+      <a href="#features" class="nav-link-custom">Features</a>
+      <a href="#business-profile" class="nav-link-custom">Business Profile</a>
+      <a href="#how-it-works" class="nav-link-custom">How It Works</a>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+      <a href="dashboard.html" class="btn-gradient">
+        <i class="fa-solid fa-gauge-high me-1"></i> Dashboard
+      </a>
+
+      <div class="dropdown">
+        <button class="btn btn-outline-info dropdown-toggle fw-bold d-flex align-items-center gap-1" type="button" data-bs-toggle="dropdown">
+          <i class="fa-solid fa-right-to-bracket me-1"></i> Login / Register
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-dark-custom dropdown-menu-end">
+          <li><a class="dropdown-item dropdown-item-custom" href="login.html?role=admin"><i class="fa-solid fa-user-shield text-danger me-2"></i>Login as Owner/Admin</a></li>
+          <li><a class="dropdown-item dropdown-item-custom" href="login.html?role=manager"><i class="fa-solid fa-user-gear text-warning me-2"></i>Login as Supervisor/Manager</a></li>
+          <li><a class="dropdown-item dropdown-item-custom" href="login.html?role=employee"><i class="fa-solid fa-user text-success me-2"></i>Login as Cashier/Staff</a></li>
+          <li><hr class="dropdown-divider border-secondary"></li>
+          <li><a class="dropdown-item dropdown-item-custom" href="login.html"><i class="fa-solid fa-key me-2"></i>Custom Auth Portal...</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container hero-section text-center">
+    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" style="background:rgba(56, 189, 248, 0.15); border:1px solid rgba(56, 189, 248, 0.4)">
+      <i class="fa-solid fa-circle-check text-info"></i>
+      <span class="fw-bold text-info small">Sri Ganesh General Stores Official Portal</span>
+    </div>
+
+    <h1 class="display-4 fw-extrabold mb-3">
+      Retail POS, Visual Analytics &amp; <span class="gradient-text">Owner Profit Optimization</span>
+    </h1>
+
+    <p class="lead mx-auto mb-4" style="max-width:760px; color: var(--text-sub); font-size: 1.15rem">
+      Streamline Kirana sales billing, thermal receipts, supplier price comparisons, deadstock warnings, inventory editing, reordering, and strict password-protected 3-role financial data abstraction.
+    </p>
+
+    <div class="d-flex justify-content-center gap-3 mb-5">
+      <a href="dashboard.html" class="btn-gradient btn-lg">
+        <i class="fa-solid fa-gauge-high me-2"></i> Launch Store Dashboard
+      </a>
+      <a href="login.html" class="btn btn-lg btn-outline-info">
+        <i class="fa-solid fa-key me-2"></i> Login Portal
+      </a>
+    </div>
+  </div>
+
+  <div id="about" class="py-5 border-top border-secondary" style="background:var(--panel-bg)">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-md-6">
+          <span class="text-info uppercase fw-bold small text-uppercase">About StockSync</span>
+          <h2 class="fw-bold text-light mt-1 mb-3">Next-Generation Kirana Store Management System</h2>
+          <p style="color:var(--text-sub); font-size:1rem; line-height:1.6">
+            StockSync is an enterprise retail inventory, POS billing, and financial analytics platform designed specifically for kirana outlets like <strong>Sri Ganesh General Stores</strong> in Bangalore.
+          </p>
+        </div>
+        <div class="col-md-6 text-center">
+          <div class="custom-card p-4">
+            <i class="fa-solid fa-store fs-1 text-info mb-3 d-block"></i>
+            <h4 class="fw-bold text-light">Sri Ganesh General Stores</h4>
+            <p class="small mb-2" style="color:var(--text-sub)">APMC Yard, Bangalore Market #12</p>
+            <span class="badge bg-success fs-6">25+ Years Serving Wholesale &amp; Retail Customers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="features" class="py-5 border-top border-secondary">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="text-info uppercase fw-bold small text-uppercase">Core Modules</span>
+        <h2 class="fw-bold text-light">Built for Fast Sales &amp; High Profitability</h2>
+      </div>
+
+      <div class="row g-4 text-start">
+        <div class="col-md-4">
+          <div class="custom-card h-100">
+            <div class="kpi-icon-bubble kpi-cyan mb-3"><i class="fa-solid fa-cash-register"></i></div>
+            <h5 class="fw-bold text-info">Fast POS Billing Counter</h5>
+            <p style="color: var(--text-sub); font-size:0.92rem">
+              Instant product search, cart addition, automatic GST tax calculations, and thermal invoice receipt printing.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="custom-card h-100">
+            <div class="kpi-icon-bubble kpi-rose mb-3"><i class="fa-solid fa-chart-pie"></i></div>
+            <h5 class="fw-bold text-danger">Owner Analytics &amp; Deadstock Alert</h5>
+            <p style="color: var(--text-sub); font-size:0.92rem">
+              Interactive Chart.js pie &amp; bar charts for fast-selling items, deadstock capital warnings, and supplier price comparisons.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="custom-card h-100">
+            <div class="kpi-icon-bubble kpi-amber mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+            <h5 class="fw-bold text-warning">Strict Revenue Abstraction</h5>
+            <p style="color: var(--text-sub); font-size:0.92rem">
+              Owner/Admin keeps total sales revenue, net operating profit, and cost prices confidential from Supervisors and Cashiers.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="business-profile" class="py-5 border-top border-secondary" style="background:var(--panel-bg)">
+    <div class="container">
+      <div class="row g-4 align-items-center">
+        <div class="col-md-5">
+          <div class="custom-card p-4">
+            <h4 class="fw-bold text-info mb-3"><i class="fa-solid fa-building me-2"></i>Business Profile</h4>
+            <table class="table table-dark table-striped mb-0">
+              <tbody>
+                <tr><td class="fw-bold">Business Name</td><td>Sri Ganesh General Stores</td></tr>
+                <tr><td class="fw-bold">Branch Location</td><td>APMC Yard, Bangalore Market #12</td></tr>
+                <tr><td class="fw-bold">GSTIN</td><td>29AABCS1429B1Z0</td></tr>
+                <tr><td class="fw-bold">Primary Phone</td><td>+91 98200 11223</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-md-7">
+          <h3 class="fw-bold text-light mb-3">Enterprise Operations &amp; Supplier Network</h3>
+          <p style="color:var(--text-sub); line-height:1.6">
+            Sri Ganesh General Stores operates as a premier wholesale and retail merchant supplying daily essentials across Bangalore. Connected with major wholesale suppliers including <em>Ganesh Wholesalers</em>, <em>Lakshmi Distributors</em>, and <em>Sri Ram Suppliers</em>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="how-it-works" class="py-5 border-top border-secondary">
+    <div class="container text-center">
+      <span class="text-info uppercase fw-bold small text-uppercase">Simple Workflow</span>
+      <h2 class="fw-bold text-light mb-5">How StockSync Works in 3 Steps</h2>
+
+      <div class="row g-4 text-start">
+        <div class="col-md-4">
+          <div class="custom-card h-100 p-4">
+            <div class="fs-2 text-info fw-bold mb-2">01</div>
+            <h5 class="fw-bold text-light">Catalog &amp; Stock Setup</h5>
+            <p style="color:var(--text-sub); font-size:0.9rem">Add product items with SKU codes, selling prices, cost prices, and reorder limits.</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="custom-card h-100 p-4">
+            <div class="fs-2 text-success fw-bold mb-2">02</div>
+            <h5 class="fw-bold text-light">POS Billing &amp; Invoicing</h5>
+            <p style="color:var(--text-sub); font-size:0.9rem">Select items, collect payments, and print GST thermal receipts.</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="custom-card h-100 p-4">
+            <div class="fs-2 text-warning fw-bold mb-2">03</div>
+            <h5 class="fw-bold text-light">Owner Profit Optimization</h5>
+            <p style="color:var(--text-sub); font-size:0.9rem">Review demand trends, deadstock warnings, supplier price arbitrage, and profit statements.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="py-4 border-top border-secondary text-center" style="background:var(--panel-bg)">
+    <div class="container">
+      <p class="small mb-0" style="color:var(--text-sub)">&copy; 2026 StockSync — Sri Ganesh General Stores. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/landing.js"></script>
+</body>
+</html>

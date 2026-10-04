@@ -1,0 +1,9 @@
+/* Login Page Styling */
+.auth-wrapper {
+  min-height: 85vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;
+}
+.kpi-icon-bubble {
+  width: 60px; height: 60px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;
+}
+.kpi-cyan { background: rgba(56, 189, 248, 0.15); color: var(--cyan) !important; }

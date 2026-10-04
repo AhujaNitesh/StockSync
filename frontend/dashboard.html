@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StockSync — Store Dashboard &amp; Analytics (Sri Ganesh General Stores)</title>
+
+  <!-- External Stylesheets -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js and Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Separate CSS Files -->
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- TOP GLASS NAVBAR -->
+  <nav class="glass-navbar d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center gap-3">
+      <button id="sidebarToggleBtn" class="sidebar-toggle-btn me-2" title="Toggle Sidebar">
+        <i id="sidebarToggleIcon" class="fa-solid fa-bars fs-5"></i>
+        <span id="sidebarToggleText" class="small fw-bold d-none d-md-inline">Collapse</span>
+      </button>
+
+      <a href="index.html" class="brand-logo">
+        <i class="fa-solid fa-store fs-3 text-info"></i>
+        <span>StockSync <small style="font-size:0.75rem;color:var(--cyan)">v2.5 Dark</small></span>
+      </a>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="role-switch-container">
+        <span class="small fw-bold px-2 d-none d-lg-inline" style="color:var(--text-sub)">Switch Role:</span>
+        <button id="roleBtnAdmin" class="role-pill-btn admin active" onclick="handleRoleClick('admin')">
+          <i class="fa-solid fa-shield-halved"></i> Owner
+        </button>
+        <button id="roleBtnManager" class="role-pill-btn manager" onclick="handleRoleClick('manager')">
+          <i class="fa-solid fa-user-gear"></i> Supervisor
+        </button>
+        <button id="roleBtnEmployee" class="role-pill-btn employee" onclick="handleRoleClick('employee')">
+          <i class="fa-solid fa-user"></i> Cashier
+        </button>
+      </div>
+
+      <a href="index.html" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
+        <i class="fa-solid fa-house"></i> Home
+      </a>
+      <a href="login.html" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN WRAPPER (SIDEBAR + MAIN CANVAS) -->
+  <div class="d-flex">
+    <!-- COLLAPSIBLE SIDEBAR -->
+    <aside id="sidebarWrapper" class="sidebar-wrapper">
+      <div class="p-3 border-bottom border-secondary d-flex align-items-center justify-content-between">
+        <div class="store-branch-text">
+          <strong class="text-info d-block fs-6">SRI GANESH STORE</strong>
+          <small style="color: var(--text-sub)">APMC Yard Branch #12</small>
+        </div>
+        <button id="sidebarChevronBtn" class="btn btn-sm text-secondary p-0 ms-1 border-0" title="Toggle Sidebar">
+          <i id="sidebarChevronIcon" class="fa-solid fa-angles-left text-secondary fs-6"></i>
+        </button>
+      </div>
+
+      <div class="py-2">
+        <div class="sidebar-group-title">Operations</div>
+        <button class="sidebar-item active" data-tab="overview" title="Overview">
+          <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-gauge-high text-info fs-5"></i><span class="sidebar-item-label">Overview</span></div>
+        </button>
+        <button class="sidebar-item" data-tab="products" title="Products & Stock">
+          <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-boxes-stacked text-info fs-5"></i><span class="sidebar-item-label">Products &amp; Stock</span></div>
+        </button>
+        <button class="sidebar-item" data-tab="sales" title="Sales (POS)">
+          <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-cash-register text-info fs-5"></i><span class="sidebar-item-label">Sales (POS)</span></div>
+        </button>
+        <button class="sidebar-item" data-tab="purchases" title="Purchases">
+          <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-cart-flatbed text-info fs-5"></i><span class="sidebar-item-label">Purchases</span></div>
+        </button>
+
+        <div class="sidebar-group-title mt-3">Management</div>
+        <button class="sidebar-item" data-tab="suppliers" title="Suppliers">
+          <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-truck-fast text-info fs-5"></i><span class="sidebar-item-label">Suppliers</span></div>
+        </button>
+        <button class="sidebar-item" data-tab="alerts" title="Stock Alerts">
+          <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-info fs-5"></i><span class="sidebar-item-label">Stock Alerts</span></div>
+          <span id="sidebarAlertBadge" class="badge bg-danger rounded-pill px-2 sidebar-badge">2</span>
+        </button>
+        <button class="sidebar-item" data-tab="reports" title="Reports & Insights">
+          <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-chart-line text-info fs-5"></i><span class="sidebar-item-label">Reports &amp; Insights</span></div>
+        </button>
+      </div>
+
+      <div class="mt-auto p-3 border-top border-secondary">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fa-solid fa-circle-user fs-4 text-info flex-shrink-0"></i>
+          <div class="user-profile-text">
+            <div id="currentUserLabel" class="fw-bold small" style="color: #ffffff">Sri Ganesh (Owner/Admin)</div>
+            <small id="currentRoleDesc" style="color: var(--text-sub)">Active: OWNER</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="flex-grow-1 p-4" style="maxHeight: calc(100vh - 66px); overflow-y: auto;">
+      <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+        <h4 id="currentModuleTitle" class="fw-bold text-light mb-0">OVERVIEW MODULE</h4>
+        <button id="btnOpenPOS" class="btn-gradient btn-sm" onclick="openPOSModal()">
+          <i class="fa-solid fa-plus me-1"></i> New POS Billing Sale
+        </button>
+      </div>
+
+      <!-- VIEW 1: OVERVIEW -->
+      <section id="view-overview" class="dashboard-view-section">
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <div class="stat-kpi-card">
+              <div class="kpi-icon-bubble kpi-amber"><i class="fa-solid fa-cart-flatbed"></i></div>
+              <div>
+                <div id="kpiTotalPurchases" class="kpi-value">₹15,050</div>
+                <div class="kpi-label">Total Purchases (2 Orders)</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-kpi-card">
+              <div class="kpi-icon-bubble kpi-emerald"><i class="fa-solid fa-receipt"></i></div>
+              <div>
+                <div id="kpiTotalSales" class="kpi-value">₹2,123</div>
+                <div class="kpi-label">Total Sales (3 Bills)</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-kpi-card">
+              <div class="kpi-icon-bubble kpi-cyan"><i class="fa-solid fa-truck-fast"></i></div>
+              <div>
+                <div class="kpi-value">3</div>
+                <div class="kpi-label">Active Suppliers</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-kpi-card">
+              <div class="kpi-icon-bubble kpi-rose"><i class="fa-solid fa-boxes-stacked"></i></div>
+              <div>
+                <div id="kpiTotalSkus" class="kpi-value">7</div>
+                <div class="kpi-label">SKUs Tracked</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="overviewChartsArea" class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="custom-card h-100">
+              <h6 class="fw-bold text-info mb-3"><i class="fa-solid fa-chart-pie me-2"></i>Top Selling Products</h6>
+              <div style="height: 240px; position: relative; width: 100%;"><canvas id="chartFastSelling"></canvas></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="custom-card h-100">
+              <h6 class="fw-bold text-success mb-3"><i class="fa-solid fa-chart-bar me-2"></i>Stock Value by Category</h6>
+              <div style="height: 240px; position: relative; width: 100%;"><canvas id="chartStockValueCategory"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="overviewLockCard" class="restricted-card-lock mb-4 d-none">
+          <i class="fa-solid fa-lock fs-1 text-warning mb-2 d-block"></i>
+          <h5 class="text-warning fw-bold">Financial &amp; Revenue Analytics Restricted</h5>
+          <p class="mb-0" style="color: var(--text-sub)">Total sales revenue, net profit, stock valuation, and cost prices are restricted to Store Owner/Admin.</p>
+        </div>
+
+        <div class="custom-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-info mb-0"><i class="fa-solid fa-table-list me-2"></i>Live Inventory Stock Status</h6>
+            <button id="btnOverviewAddProd" class="btn-gradient btn-sm" onclick="openAddProductModal()">+ Add Product</button>
+          </div>
+          <div class="styled-table-container">
+            <table class="styled-table">
+              <thead>
+                <tr><th>SKU</th><th>Product Name</th><th>Category</th><th>Stock Qty</th><th>Selling Price</th><th>Cost Price</th><th>Actions &amp; Reorder</th></tr>
+              </thead>
+              <tbody id="overviewProductsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: PRODUCTS -->
+      <section id="view-products" class="dashboard-view-section d-none">
+        <div class="custom-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-info mb-0">Products &amp; Stock Management</h5>
+            <button id="btnProdAddProd" class="btn-gradient btn-sm" onclick="openAddProductModal()">+ Add Product</button>
+          </div>
+          <div class="styled-table-container">
+            <table class="styled-table">
+              <thead>
+                <tr><th>Product Name</th><th>SKU</th><th>Category</th><th>Supplier</th><th>Stock Qty</th><th>Selling Price</th><th>Cost Price</th><th>Edit / Reorder Actions</th></tr>
+              </thead>
+              <tbody id="fullProductsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: SALES (POS) -->
+      <section id="view-sales" class="dashboard-view-section d-none">
+        <div class="custom-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-info mb-0">Sales (POS) Transactions &amp; Invoices</h5>
+            <button class="btn-gradient btn-sm" onclick="openPOSModal()">+ New POS Billing</button>
+          </div>
+          <div class="styled-table-container">
+            <table class="styled-table">
+              <thead>
+                <tr><th>Bill No</th><th>Date &amp; Time</th><th>Customer Name</th><th>Payment Mode</th><th>Cashier</th><th>Total Amount</th></tr>
+              </thead>
+              <tbody id="salesTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: PURCHASES -->
+      <section id="view-purchases" class="dashboard-view-section d-none">
+        <div class="custom-card">
+          <h5 class="fw-bold text-info mb-3">Purchases &amp; Supplier Orders</h5>
+          <div class="styled-table-container">
+            <table class="styled-table">
+              <thead>
+                <tr><th>PO Number</th><th>Order Date</th><th>Supplier Name</th><th>Items &amp; Quantity</th><th>Status</th><th>Purchase Cost</th></tr>
+              </thead>
+              <tbody id="purchasesTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: SUPPLIERS -->
+      <section id="view-suppliers" class="dashboard-view-section d-none">
+        <div class="custom-card">
+          <h5 class="fw-bold text-info mb-3">Suppliers Directory</h5>
+          <div class="styled-table-container">
+            <table class="styled-table">
+              <thead>
+                <tr><th>Supplier Name</th><th>Contact Person</th><th>Phone</th><th>Email</th><th>City</th></tr>
+              </thead>
+              <tbody id="suppliersTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 6: STOCK ALERTS -->
+      <section id="view-alerts" class="dashboard-view-section d-none">
+        <div class="custom-card" style="border-color: var(--rose);">
+          <h5 id="stockAlertsTitle" class="fw-bold text-danger mb-3"><i class="fa-solid fa-triangle-exclamation me-2"></i>Stock Alerts List</h5>
+          <div class="styled-table-container">
+            <table class="styled-table">
+              <thead>
+                <tr><th>Product Name</th><th>Current Stock</th><th>Reorder Threshold</th><th>Supplier</th><th>Action</th></tr>
+              </thead>
+              <tbody id="alertsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 7: REPORTS -->
+      <section id="view-reports" class="dashboard-view-section d-none">
+        <div id="reportsContentArea">
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="custom-card h-100">
+                <h6 class="fw-bold text-info mb-3"><i class="fa-solid fa-chart-bar me-2"></i>Stock Value by Category</h6>
+                <div style="height: 240px; position: relative; width: 100%;"><canvas id="chartStockValueCatRep"></canvas></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="custom-card h-100">
+                <h6 class="fw-bold text-success mb-3"><i class="fa-solid fa-chart-pie me-2"></i>Top Selling Products</h6>
+                <div style="height: 240px; position: relative; width: 100%;"><canvas id="chartFastSellingRep"></canvas></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="custom-card h-100">
+                <h6 class="fw-bold text-info mb-3"><i class="fa-solid fa-arrow-trend-up me-2"></i>Weekly Sales Revenue Trend</h6>
+                <div style="height: 240px; position: relative; width: 100%;"><canvas id="chartSalesTrend"></canvas></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="custom-card h-100">
+                <h6 class="fw-bold text-emerald mb-3" style="color: var(--emerald);"><i class="fa-solid fa-tags me-2"></i>Supplier Wholesale Price Comparison</h6>
+                <div style="height: 240px; position: relative; width: 100%;"><canvas id="chartSupplierPrices"></canvas></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="custom-card mb-4">
+            <h6 class="fw-bold text-info mb-3"><i class="fa-solid fa-book-journal-whills me-2"></i>Financial &amp; Ledger Summary</h6>
+            <div class="styled-table-container">
+              <table class="styled-table">
+                <tbody>
+                  <tr><td class="fw-bold">Total Catalog SKUs Tracked</td><td id="repTotalSkus">7 items</td></tr>
+                  <tr><td class="fw-bold">Inventory Asset Valuation (Stock Value)</td><td class="text-success fw-bold">₹95,450.00</td></tr>
+                  <tr><td class="fw-bold">Monthly Gross Sales Revenue</td><td id="repTotalSales" class="text-info fw-bold">₹2,123.00</td></tr>
+                  <tr><td class="fw-bold">Total Supplier Purchases Expenses</td><td id="repTotalPurchases" class="text-warning fw-bold">₹15,050.00</td></tr>
+                  <tr><td class="fw-bold">Operating Utility Overhead</td><td>₹3,200.00</td></tr>
+                  <tr><td class="fw-bold">Net Store Operating Profit / Margin</td><td id="repNetProfit" class="text-emerald fw-bold fs-5" style="color: var(--emerald);">₹7,850.00</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="custom-card" style="border-color: var(--cyan);">
+            <h6 class="fw-bold text-info mb-3"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Owner Expense Management &amp; Profit Optimization Recommendations</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="p-3 rounded border border-success" style="background:#070a12;">
+                  <strong class="text-success d-block mb-1">Supplier Arbitrage Opportunity:</strong>
+                  <p class="mb-0" style="color: var(--text-sub); font-size:0.88rem;">Buy <em>Tata Salt 1kg</em> from <strong>Ganesh Wholesalers (₹21.00)</strong> instead of <strong>Lakshmi Distributors (₹24.50)</strong> to save ₹3.50/unit (+14.2% margin).</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 rounded border border-danger" style="background:#070a12;">
+                  <strong class="text-danger d-block mb-1">Deadstock Liquidation Alert:</strong>
+                  <p class="mb-0" style="color: var(--text-sub); font-size:0.88rem;"><em>Surf Excel 1kg</em> sales velocity is down 40%. <strong>DO NOT RE-ORDER.</strong> Run a 5% promotional bundle discount to unfreeze ₹4,800 working capital.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="reportsLockCard" class="restricted-card-lock d-none">
+          <i class="fa-solid fa-lock fs-1 text-danger mb-2 d-block"></i>
+          <h5 class="text-danger fw-bold">Financial &amp; Ledger Abstraction Active</h5>
+          <p class="mb-0" style="color: var(--text-sub)">Reports &amp; Financial Insights, Ledger Summaries, Category Stock Values, and Profit Statements are accessible strictly to Store Owner/Admin.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- EDIT PRODUCT MODAL -->
+  <div class="modal fade" id="editProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content custom-card">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-info fw-bold"><i class="fa-solid fa-pen-to-square me-2"></i>Edit Product &amp; Adjust Stock</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editProdId">
+          <div class="row g-3">
+            <div class="col-md-6"><label class="form-label">Product Name</label><input id="editProdName" class="form-control" /></div>
+            <div class="col-md-6"><label class="form-label">SKU Code</label><input id="editProdSku" class="form-control" /></div>
+            <div class="col-md-4"><label class="form-label">Category</label><input id="editProdCat" class="form-control" /></div>
+            <div class="col-md-4"><label class="form-label">Selling Price (₹)</label><input id="editProdPrice" type="number" class="form-control" /></div>
+            <div class="col-md-4"><label class="form-label">Cost Price (₹)</label><input id="editProdCost" type="number" class="form-control" /></div>
+            <div class="col-md-4"><label class="form-label">Current Stock Qty</label><input id="editProdQty" type="number" class="form-control" /></div>
+            <div class="col-md-4"><label class="form-label">Re-order Threshold</label><input id="editProdReorder" type="number" class="form-control" /></div>
+            <div class="col-md-4"><label class="form-label">Supplier</label><select id="editProdSupplier" class="form-select"></select></div>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn-gradient" onclick="saveEditedProduct()"><i class="fa-solid fa-circle-check me-1"></i> Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REORDER PO MODAL -->
+  <div class="modal fade" id="reorderModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content custom-card">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-warning fw-bold"><i class="fa-solid fa-cart-plus me-2"></i>Create Supplier Reorder PO</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="reorderProdId">
+          <div class="p-3 mb-3 rounded border border-warning" style="background:#0d1527;">
+            <div id="reorderProdName" class="fw-bold text-light fs-6"></div>
+            <small class="text-secondary d-block">Current Stock: <strong id="reorderProdStock" class="text-danger"></strong></small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Quantity to Order</label>
+            <input type="number" min="1" id="reorderQtyInput" class="form-control" value="50" />
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn-gradient" onclick="confirmReorderPO()">Confirm PO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SWITCH ROLE PASSWORD MODAL -->
+  <div class="modal fade" id="switchRoleModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content custom-card">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-warning fw-bold"><i class="fa-solid fa-shield-halved me-2"></i>Confirm Password to Switch Role</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="switchRoleForm" onsubmit="confirmRoleSwitch(event)">
+          <div class="modal-body">
+            <input type="hidden" id="targetRoleInput">
+            <div class="p-3 mb-3 rounded border border-warning" style="background:#0d1527;">
+              <div id="switchRoleName" class="fw-bold text-light fs-6 mb-1"></div>
+              <span id="switchRoleBadge" class="badge"></span>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Enter Password / Passkey</label>
+              <input type="password" id="switchPasswordInput" class="form-control" required />
+              <small class="text-info d-block mt-1">Hint demo password: <code id="switchRoleHint">admin123</code></small>
+            </div>
+            <div id="switchRoleError" class="alert alert-danger p-2 small text-center d-none"></div>
+          </div>
+          <div class="modal-footer border-secondary">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-gradient">Verify &amp; Switch Role</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- POS BILLING MODAL -->
+  <div class="modal fade" id="posModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content custom-card">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-info fw-bold"><i class="fa-solid fa-cash-register me-2"></i>POS Sale Checkout Counter</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6"><label class="form-label">Customer Name</label><input id="posCustomerName" class="form-control" value="Walk-in Customer" /></div>
+            <div class="col-md-3"><label class="form-label">Payment Mode</label><select id="posPaymentMode" class="form-select"><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Card">Card</option></select></div>
+            <div class="col-md-3"><label class="form-label">Discount (₹)</label><input id="posDiscount" type="number" min="0" class="form-control" value="0" oninput="renderCartTable()" /></div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-7">
+              <select id="posProductSelect" class="form-select"></select>
+            </div>
+            <div class="col-md-3"><input id="posQtyInput" type="number" min="1" class="form-control" value="1" placeholder="Qty" /></div>
+            <div class="col-md-2"><button class="btn-gradient w-100" onclick="addItemToCart()">+ Add</button></div>
+          </div>
+
+          <div class="table-responsive mb-3">
+            <table class="table table-dark table-striped mb-0">
+              <thead><tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Action</th></tr></thead>
+              <tbody id="posCartTbody"></tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background:#070a12; border:1px solid var(--cyan)">
+            <div class="fw-bold text-light">Total Bill Payable:</div>
+            <div id="posTotalPayable" class="fs-4 fw-bold text-success">₹0.00</div>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button id="btnCompleteSale" class="btn-gradient" onclick="completeSale()" disabled>
+            <i class="fa-solid fa-print me-1"></i> Complete Sale &amp; Thermal Receipt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THERMAL INVOICE MODAL -->
+  <div class="modal fade" id="invoiceModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content custom-card">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-success fw-bold"><i class="fa-solid fa-receipt me-2"></i>Thermal Receipt Invoice</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="invoicePaper" class="invoice-receipt-paper"></div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-success" onclick="window.print()"><i class="fa-solid fa-print me-1"></i> Print Thermal Receipt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD PRODUCT MODAL -->
+  <div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content custom-card">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-info fw-bold">+ Add New Inventory Product</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6"><label class="form-label">Product Name</label><input id="newProdName" class="form-control" placeholder="e.g. Fortune Rice 5kg" /></div>
+            <div class="col-md-6"><label class="form-label">SKU Code</label><input id="newProdSku" class="form-control" placeholder="e.g. RIC-5K" /></div>
+            <div class="col-md-6"><label class="form-label">Category</label><input id="newProdCat" class="form-control" placeholder="e.g. Grains & Pulses" /></div>
+            <div class="col-md-6"><label class="form-label">Supplier</label><select id="newProdSupplier" class="form-select"></select></div>
+            <div class="col-md-6"><label class="form-label">Selling Price (₹)</label><input id="newProdPrice" type="number" class="form-control" /></div>
+            <div class="col-md-6"><label class="form-label">Cost Price (₹)</label><input id="newProdCost" type="number" class="form-control" /></div>
+            <div class="col-md-6"><label class="form-label">Opening Stock Qty</label><input id="newProdQty" type="number" class="form-control" /></div>
+            <div class="col-md-6"><label class="form-label">Re-order Threshold</label><input id="newProdReorder" type="number" class="form-control" value="10" /></div>
+          </div>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn-gradient" onclick="saveNewProduct()">Save Product</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Separate JS File -->
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

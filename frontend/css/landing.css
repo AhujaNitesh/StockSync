@@ -1,0 +1,13 @@
+/* Landing Page Styling */
+.hero-section {
+  padding: 5rem 1rem;
+  background: radial-gradient(circle at 50% 30%, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+}
+.kpi-icon-bubble {
+  width: 56px; height: 56px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;
+}
+.kpi-cyan { background: rgba(56, 189, 248, 0.15); color: var(--cyan) !important; }
+.kpi-emerald { background: rgba(16, 185, 129, 0.15); color: var(--emerald) !important; }
+.kpi-amber { background: rgba(245, 158, 11, 0.15); color: var(--amber) !important; }
+.kpi-rose { background: rgba(244, 63, 94, 0.15); color: var(--rose) !important; }
